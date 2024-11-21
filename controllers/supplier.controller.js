@@ -1,46 +1,41 @@
-const bcrypt = require('bcryptjs');
+const Supplier = require('../models/supplier.model');
 const User = require('../models/user.model');
 
-exports.createCustomer = async (req, res) => {
-  const { firstName, lastName, email, phoneNumber, homeAddress, password } = req.body;
+exports.createSupplier = async (req, res) => {
+  const { name, email, phoneNumber, homeAddress } = req.body;
 
   try {
     const adminUser = await User.findOne({ email: req.user.email }).exec();
     if (!adminUser || adminUser.role !== 'admin') {
-      return res.status(403).send({ message: 'Admin only can add customer.' });
+      return res.status(403).send({ message: 'Admin only can add supplier.' });
     }
 
-    const existingCustomer = await User.findOne({ email }).exec();
-    if (existingCustomer) {
+    const existingSupplier = await Supplier.findOne({ email }).exec();
+    if (existingSupplier) {
       return res
         .status(409)
-        .send({ message: "Customer already exists. Please update customer's info" });
+        .send({ message: "Supplier already exists. Please update supplier's info" });
     }
 
-    const userData = new User({
-      firstName,
-      lastName,
+    const supplierData = new Supplier({
+      name,
       email,
-      role: 'customer',
-      password: bcrypt.hashSync(password, 8),
       homeAddress: homeAddress,
       phoneNumber: phoneNumber,
     });
 
-    await userData.save();
-    return res.status(201).send({ message: 'Customer created successfully' });
+    await supplierData.save();
+    return res.status(201).send({ message: 'Supplier created successfully' });
   } catch (error) {
     console.error(error);
-    return res.status(500).send({ message: 'An error occurred while creating the customer.' });
+    return res.status(500).send({ message: 'An error occurred while creating the supplier.' });
   }
 };
 
-exports.readCustomer = async (req, res) => {
-  console.log(123, 'readCustomer');
-
+exports.readSupplier = async (req, res) => {
   const { pageNum, pageSize, keyword } = req.query;
 
-  console.log(req.query, 'req.body');
+  console.log(req.query);
 
   try {
     const adminUser = await User.findOne({ email: req.user.email }).exec();
@@ -48,30 +43,26 @@ exports.readCustomer = async (req, res) => {
       return res.status(403).send({ message: 'Admin only can read customers.' });
     }
 
-    const filter = {
-      role: { $ne: 'admin' },
-      ...(keyword
-        ? {
-            $or: [
-              { firstName: { $regex: keyword, $options: 'i' } },
-              { lastName: { $regex: keyword, $options: 'i' } },
-              { email: { $regex: keyword, $options: 'i' } },
-              { phoneNumber: { $regex: keyword, $options: 'i' } },
-            ],
-          }
-        : {}),
-    };
+    const filter = keyword
+      ? {
+          $or: [
+            { name: { $regex: keyword, $options: 'i' } },
+            { email: { $regex: keyword, $options: 'i' } },
+            { phoneNumber: { $regex: keyword, $options: 'i' } },
+          ],
+        }
+      : {};
 
     const limit = parseInt(pageSize);
     const skip = (parseInt(pageNum) - 1) * limit;
 
-    const customers = await User.find(filter)
+    const customers = await Supplier.find(filter)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .exec();
 
-    const totalCount = await User.find(filter).countDocuments(filter);
+    const totalCount = await Supplier.find(filter).countDocuments(filter);
 
     return res.status(200).send({
       data: customers,
@@ -88,8 +79,8 @@ exports.readCustomer = async (req, res) => {
   }
 };
 
-exports.updateCustomer = async (req, res) => {
-  const { _id, firstName, lastName, email, phoneNumber, homeAddress, password } = req.body;
+exports.updateSupplier = async (req, res) => {
+  const { _id, name, email, phoneNumber, homeAddress } = req.body;
 
   console.log(req.body);
 
@@ -99,26 +90,19 @@ exports.updateCustomer = async (req, res) => {
       return res.status(403).send({ message: 'Admin only can update customer.' });
     }
 
-    const existingCustomer = await User.findOne({ _id }).exec();
+    const existingCustomer = await Supplier.findOne({ _id }).exec();
     if (!existingCustomer) {
       return res.status(404).send({ message: 'Customer not found.' });
     }
 
     const updateFields = {
-      firstName,
-      lastName,
+      name,
       email,
       homeAddress,
       phoneNumber,
     };
 
-    if (password && password.trim()) {
-      console.log(123);
-
-      updateFields.password = bcrypt.hashSync(password, 8);
-    }
-
-    await User.updateOne({ _id }, { $set: updateFields });
+    await Supplier.updateOne({ _id }, { $set: updateFields });
 
     return res.status(200).send({ message: 'Customer updated successfully' });
   } catch (error) {
@@ -127,9 +111,9 @@ exports.updateCustomer = async (req, res) => {
   }
 };
 
-exports.deleteCustomer = async (req, res) => {
+exports.deleteSupplier = async (req, res) => {
   console.log(req.query);
-  const { deleteCustomerID } = req.query;
+  const { deleteSupplierID } = req.query;
 
   try {
     const adminUser = await User.findOne({ email: req.user.email }).exec();
@@ -137,11 +121,11 @@ exports.deleteCustomer = async (req, res) => {
       return res.status(403).send({ message: 'Only admins can delete customers.' });
     }
 
-    if (!deleteCustomerID) {
+    if (!deleteSupplierID) {
       return res.status(400).send({ message: 'Customer ID is required.' });
     }
 
-    const deletedCustomer = await User.findByIdAndDelete(deleteCustomerID).exec();
+    const deletedCustomer = await Supplier.findByIdAndDelete(deleteSupplierID).exec();
     if (!deletedCustomer) {
       return res.status(404).send({ message: 'Customer not found.' });
     }

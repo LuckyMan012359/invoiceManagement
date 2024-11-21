@@ -35,9 +35,9 @@ const SupplierForm = ({ showSupplierForm, onClose, onSubmit, supplier, setSuppli
             <input
               type='text'
               className='w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300'
-              value={supplier.phone}
+              value={supplier.phoneNumber}
               name='phone'
-              onChange={(e) => setSupplier((prev) => ({ ...prev, phone: e.target.value }))}
+              onChange={(e) => setSupplier((prev) => ({ ...prev, phoneNumber: e.target.value }))}
               required
             />
           </div>
@@ -46,9 +46,9 @@ const SupplierForm = ({ showSupplierForm, onClose, onSubmit, supplier, setSuppli
             <input
               type='text'
               className='w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300'
-              value={supplier.home_address}
+              value={supplier.homeAddress}
               name='home_address'
-              onChange={(e) => setSupplier((prev) => ({ ...prev, home_address: e.target.value }))}
+              onChange={(e) => setSupplier((prev) => ({ ...prev, homeAddress: e.target.value }))}
               required
             />
           </div>

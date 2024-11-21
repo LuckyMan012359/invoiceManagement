@@ -46,7 +46,7 @@ export const Customers = () => {
     };
 
     fetchData();
-  }, [keyword, currentPage, customersPerPage, showCustomerForm]);
+  }, [keyword, currentPage, customersPerPage, isChanged]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,12 +63,13 @@ export const Customers = () => {
       }
     } else {
       const updateData = {
+        _id: customer._id,
         firstName: customer.firstName,
         lastName: customer.lastName,
         email: customer.email,
         phoneNumber: customer.phoneNumber,
         homeAddress: customer.homeAddress,
-        password: !isChangePassword ? '' : customer.homeAddress,
+        password: !isChangePassword ? '' : customer.password,
       };
 
       const response = await axiosInstance('/customer/update_customer', 'put', updateData);
@@ -92,6 +93,7 @@ export const Customers = () => {
       homeAddress: '',
       password: '',
     });
+    setIsChanged(false);
   };
 
   const deleteCustomer = async (deleteCustomerID) => {

@@ -4,6 +4,7 @@ const indexRoute = require('./routes/index');
 const userRoute = require('./routes/user.route');
 const transactionRouter = require('./routes/transaction.route');
 const customerRouter = require('./routes/customer.route');
+const supplierRouter = require('./routes/supplier.route');
 const { connectDB } = require('./config/connect');
 const cors = require('cors');
 require('dotenv').config();
@@ -31,6 +32,7 @@ app.use('/', indexRoute);
 app.use('/api/user', userRoute);
 app.use('/transaction', transactionRouter);
 app.use('/api/customer', customerRouter);
+app.use('/api/supplier', supplierRouter);
 app.get('*', (req, res) => {
   res.status(404).send('404! This is an invalid URL.');
 });
