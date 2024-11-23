@@ -99,3 +99,19 @@ exports.hiddencontent = (req, res) => {
     });
   }
 };
+
+exports.userRole = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.user.email }).exec();
+
+    res.status(200).send({
+      role: user.role,
+    });
+  } catch (error) {
+    console.error('Error reading transactions:', error);
+    res.status(500).send({
+      message: 'An error occurred while retrieving transactions',
+      error: error.message,
+    });
+  }
+};

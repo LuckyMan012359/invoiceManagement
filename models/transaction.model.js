@@ -2,30 +2,49 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 /**
- * Post Schema
+ * Transaction Schema
  */
 const transactionSchema = new Schema({
-  author: {
-    type: Number,
-    required: [true, 'Author not provided'],
+  customer_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
   },
-  title: {
+  supplier_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'Supplier',
+    required: true,
+  },
+  transaction_type: {
     type: String,
-    reuqired: [true, 'Title not provided'],
-    unique: [true, 'Title already exists in database!'],
+    enum: ['invoice', 'payment', 'return'],
+    required: true,
   },
-  isPublished: {
-    type: Boolean,
-    require: [false, 'Published not provied'],
-  },
-  timestamp: {
+  amount: {
     type: Number,
+    required: true,
+  },
+  balance: {
+    type: Number,
+    required: true,
+  },
+  notes: {
+    type: String,
+  },
+  transaction_date: {
+    type: Date,
+    required: true,
+  },
+  attachments: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
+  created: {
+    type: Date,
     default: Date.now,
-  },
-  publishedDate: {
-    type: Number,
-    default: null,
   },
 });
 
-module.exports = mongoose.model('transaction', transactionSchema);
+module.exports = mongoose.model('Transaction', transactionSchema);

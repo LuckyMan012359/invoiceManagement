@@ -9,10 +9,6 @@ export const Login = () => {
   const router = useNavigate();
   const [, setCookie] = useCookies(['token']);
   const [showPassword, setShowPassword] = useState(false);
-  const [passwordInvalid, setPasswordInvalid] = useState('');
-  const [emailInvalid, setEmailInvalid] = useState('');
-
-  console.log(setPasswordInvalid, setEmailInvalid);
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -78,9 +74,6 @@ export const Login = () => {
                     ></path>
                   </svg>
                 </div>
-                {emailInvalid !== '' && (
-                  <span className='text-red-500 text-sm'>{emailInvalid}</span>
-                )}
               </div>
 
               <div>
@@ -107,9 +100,6 @@ export const Login = () => {
                     ></path>
                   </svg>
                 </div>
-                {passwordInvalid !== '' && (
-                  <span className='text-red-500 text-[13px] block'>{passwordInvalid}</span>
-                )}
               </div>
 
               <div className='flex flex-wrap items-center justify-between gap-4'>

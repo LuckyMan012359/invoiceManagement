@@ -36,11 +36,7 @@ exports.createCustomer = async (req, res) => {
 };
 
 exports.readCustomer = async (req, res) => {
-  console.log(123, 'readCustomer');
-
   const { pageNum, pageSize, keyword } = req.query;
-
-  console.log(req.query, 'req.body');
 
   try {
     const adminUser = await User.findOne({ email: req.user.email }).exec();
